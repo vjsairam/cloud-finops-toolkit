@@ -1,0 +1,97 @@
+# Cloud FinOps Toolkit Configuration
+
+# AWS Configuration
+aws:
+  region: us-east-1
+  cur_s3_bucket: my-company-cur-bucket
+  cost_explorer_enabled: true
+
+# GCP Configuration
+gcp:
+  project_id: my-gcp-project
+  billing_dataset: billing_export
+  billing_table: gcp_billing_export_v1
+  credentials_path: /path/to/service-account.json
+
+# Azure Configuration
+azure:
+  subscription_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+# Database
+database:
+  type: postgresql
+  host: localhost
+  port: 5432
+  name: finops
+  user: finops
+  password: ${DB_PASSWORD}
+
+# Anomaly Detection
+anomaly_detection:
+  baseline:
+    enabled: true
+    sensitivity: medium
+    baseline_days: 14
+  changepoint:
+    enabled: true
+    min_segment_length: 3
+    penalty: 10.0
+
+# Budgets
+budgets:
+  - name: platform_monthly
+    limit: 50000
+    period: monthly
+    team: platform
+    threshold_alerts: [0.5, 0.75, 0.9, 1.0]
+
+  - name: data_quarterly
+    limit: 150000
+    period: quarterly
+    team: data-engineering
+    threshold_alerts: [0.75, 0.9, 1.0]
+
+# Tag Governance
+tag_governance:
+  required_tags:
+    - Environment
+    - Team
+    - CostCenter
+  environment_specific_tags:
+    prod:
+      - Owner
+      - Backup
+    staging:
+      - Owner
+
+# Automated Actions
+actions:
+  dry_run: true  # Set to false to execute actions
+  approval_required: true
+  auto_approval_threshold: 100  # Auto-approve if savings < $100
+
+# Notifications
+notifications:
+  slack:
+    enabled: true
+    webhook_url: ${SLACK_WEBHOOK_URL}
+    channels:
+      anomalies: "#finops-alerts"
+      budgets: "#finops-budgets"
+      actions: "#finops-actions"
+
+  email:
+    enabled: false
+    smtp_server: smtp.gmail.com
+    smtp_port: 587
+    from_address: finops@company.com
+
+# API
+api:
+  host: 0.0.0.0
+  port: 8000
+  workers: 4
+  cors_origins:
+    - http://localhost:3000
+    - https://grafana.company.com

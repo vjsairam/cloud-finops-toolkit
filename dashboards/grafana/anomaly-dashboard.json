@@ -1,0 +1,100 @@
+{
+  "dashboard": {
+    "title": "Cloud FinOps - Anomaly Detection",
+    "tags": ["finops", "anomaly", "alerts"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Active Anomalies",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "count(cost_anomaly_active{severity!='low'})",
+            "legendFormat": "Active Anomalies"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "thresholds": [
+            {"value": 0, "color": "green"},
+            {"value": 1, "color": "yellow"},
+            {"value": 5, "color": "red"}
+          ]
+        },
+        "gridPos": {"h": 4, "w": 4, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Anomalies by Severity",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum by (severity) (cost_anomaly_count_24h)",
+            "legendFormat": "{{severity}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 4, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Anomaly Heatmap",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "sum by (service, hour) (cost_anomaly_by_service_hour)",
+            "legendFormat": "{{service}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Cost Deviation Timeline",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "actual_cost",
+            "legendFormat": "Actual Cost"
+          },
+          {
+            "expr": "expected_cost",
+            "legendFormat": "Expected Cost"
+          },
+          {
+            "expr": "upper_bound",
+            "legendFormat": "Upper Bound"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Recent Anomalies",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(20, cost_anomalies{time_range='24h'})",
+            "legendFormat": ""
+          }
+        ],
+        "gridPos": {"h": 10, "w": 24, "x": 0, "y": 16}
+      },
+      {
+        "id": 6,
+        "title": "Change Points Detected",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "cost_changepoint_events",
+            "legendFormat": "Cost Pattern Shift"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 26}
+      }
+    ],
+    "refresh": "1m",
+    "schemaVersion": 27,
+    "version": 1
+  }
+}
